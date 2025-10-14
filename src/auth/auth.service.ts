@@ -15,7 +15,6 @@ export class AuthService {
   async createAccount(body: CreateAdminDto) {
     const { email, password } = body;
 
-    // Check if email already exists
     const existing = await this.userModel.findOne({ email });
     if (existing) {
       throw new BadRequestException('Email already exists');
@@ -23,8 +22,6 @@ export class AuthService {
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Save admin
 
     const createdUser = new this.userModel({
       ...body,
@@ -34,10 +31,11 @@ export class AuthService {
     await createdUser.save();
     return { message: 'Account created successfully' };
   }
+
+
   async loginAccount(body: { email: string; password: string }) {
     const { email, password } = body;
 
-    // Find admin by email
     const admin = await this.userModel.findOne({ email });
     if (!admin) {
       throw new BadRequestException('Invalid email or password');
