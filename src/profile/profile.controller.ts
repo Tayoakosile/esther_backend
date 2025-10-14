@@ -3,7 +3,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { ProfileService } from './profile.service';
 import { UserDocument } from 'src/users/schema/user.schema';
 
-@Controller('profile')
+@Controller('/api/profile')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
   @Get('/')

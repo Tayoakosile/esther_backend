@@ -11,7 +11,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { InvitesService } from './invites.service';
 import { UserDocument } from 'src/users/schema/user.schema';
 
-@Controller('invites')
+@Controller('/api/invites')
 export class InvitesController {
   constructor(private readonly invitesService: InvitesService) {}
 

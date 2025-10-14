@@ -3,7 +3,7 @@ import { EmployeesService } from './employees.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { UserDocument } from 'src/users/schema/user.schema';
 
-@Controller('employees')
+@Controller('/api/employees')
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
 
