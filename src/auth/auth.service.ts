@@ -29,9 +29,8 @@ export class AuthService {
       role: 'admin',
     });
     await createdUser.save();
-    return { message: 'Account created successfully' };
+    return { message: 'Account created successfully', user: createdUser };
   }
-
 
   async loginAccount(body: { email: string; password: string }) {
     const { email, password } = body;
