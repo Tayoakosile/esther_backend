@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { InvitesService } from './invites.service';
+import { UserDocument } from 'src/users/schema/user.schema';
 
 @Controller('invites')
 export class InvitesController {
@@ -16,13 +17,13 @@ export class InvitesController {
 
   @Post('/')
   @UseGuards(AuthGuard)
-  createInvite(@Request() req) {
+  createInvite(@Request() req: { user: UserDocument }) {
     return this.invitesService.createInvite(req.user);
   }
 
   @Get('/')
   @UseGuards(AuthGuard)
-  getInvites(@Request() req) {
+  getInvites(@Request() req: { user: UserDocument }) {
     return this.invitesService.getInvites(req.user);
   }
 

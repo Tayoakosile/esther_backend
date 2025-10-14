@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/users/schema/user.schema';
+import { CreateAdminDto } from './dto/create-admin.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +12,7 @@ export class AuthService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly jwtService: JwtService,
   ) {}
-  async createAccount(body) {
+  async createAccount(body: CreateAdminDto) {
     const { email, password } = body;
 
     // Check if email already exists
