@@ -3,13 +3,13 @@ import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Admin, AdminSchema } from 'src/users/schema/admin.schema';
+import { User, AdminSchema } from 'src/users/schema/user.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     ConfigModule,
-    MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
+    MongooseModule.forFeature([{ name: User.name, schema: AdminSchema }]),
     JwtModule.registerAsync({
       global: true,
       imports: [ConfigModule],

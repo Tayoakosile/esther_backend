@@ -9,12 +9,12 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Request } from 'express';
 import { Model } from 'mongoose';
-import { Admin, AdminDocument } from 'src/users/schema/admin.schema';
+import { User, UserDocument } from 'src/users/schema/user.schema';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    @InjectModel(Admin.name) private adminModel: Model<AdminDocument>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
     private jwtService: JwtService,
   ) {}
 
@@ -26,9 +26,19 @@ export class AuthGuard implements CanActivate {
     }
     try {
       const payload = await this.jwtService.verifyAsync<{ id: string }>(token);
-      const user = await this.adminModel
+      const user = await this.userModel
         .findById(payload.id)
-        .select('-password -_id -__v');
+        .select('-password -__v')
+        .populate('invites')
+        .populate({
+          path: 'invited_by',
+          select: 'name email role',
+        })
+        .populate({
+          path: 'employees',
+          select:
+            '-password -role -__v -invites -employees -can_invite -is_verified -invited_by',
+        });
       if (!user) {
         throw new UnauthorizedException('User not found');
       }

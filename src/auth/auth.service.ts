@@ -1,22 +1,21 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-// import bcrypt from 'bcrypt';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import bcrypt from 'bcryptjs';
-import { Admin, AdminDocument } from 'src/users/schema/admin.schema';
 import { JwtService } from '@nestjs/jwt';
+import { InjectModel } from '@nestjs/mongoose';
+import bcrypt from 'bcryptjs';
+import { Model } from 'mongoose';
+import { User, UserDocument } from 'src/users/schema/user.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(Admin.name) private adminModel: Model<AdminDocument>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly jwtService: JwtService,
   ) {}
   async createAccount(body) {
     const { email, password } = body;
 
     // Check if email already exists
-    const existing = await this.adminModel.findOne({ email });
+    const existing = await this.userModel.findOne({ email });
     if (existing) {
       throw new BadRequestException('Email already exists');
     }
@@ -26,9 +25,10 @@ export class AuthService {
 
     // Save admin
 
-    const createdUser = new this.adminModel({
+    const createdUser = new this.userModel({
       ...body,
       password: hashedPassword,
+      role: 'admin',
     });
     await createdUser.save();
     return { message: 'Account created successfully' };
@@ -37,7 +37,7 @@ export class AuthService {
     const { email, password } = body;
 
     // Find admin by email
-    const admin = await this.adminModel.findOne({ email });
+    const admin = await this.userModel.findOne({ email });
     if (!admin) {
       throw new BadRequestException('Invalid email or password');
     }
