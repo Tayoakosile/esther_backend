@@ -59,8 +59,6 @@ export class InvitesService {
     id: string,
     body: { name: string; email: string; password: string },
   ) {
-    console.log('id :', id);
-
     const InviteToken = await this.inviteModal.findOne({
       token: id,
       used: false,

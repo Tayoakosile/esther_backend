@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { InvitesService } from './invites.service';
-import { CreateEmployeeDto } from './dto/create-employees.dto';
 
 @Controller('invites')
 export class InvitesController {
@@ -28,7 +27,7 @@ export class InvitesController {
   }
 
   @Get('/:id')
-  getSingleInvite(@Param('id') id: string, @Request() req) {
+  getSingleInvite(@Param('id') id: string) {
     return this.invitesService.getSingleInvite(id);
   }
   @Post('/:id/use')
