@@ -88,7 +88,8 @@ export class InvitesService {
       can_invite: false,
       invited_by: InviteToken.invitedBy,
     });
-    InviteToken.usedBy = createNewEmployee._id;
+    InviteToken.usedBy =
+      createNewEmployee._id as import('mongoose').Types.ObjectId;
 
     await InviteToken.save();
     await createNewEmployee.save();
