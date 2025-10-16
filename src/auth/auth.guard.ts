@@ -28,7 +28,7 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync<{ id: string }>(token);
       const user = await this.userModel
         .findById(payload.id)
-        .select('-password -__v')
+        .select('-password -__v role')
         .populate('invites')
         .populate({
           path: 'invited_by',
@@ -37,7 +37,7 @@ export class AuthGuard implements CanActivate {
         .populate({
           path: 'employees',
           select:
-            '-password -role -__v -invites -employees -can_invite -is_verified -invited_by',
+            '-password -__v -invites -employees -can_invite -is_verified -invited_by',
         });
       if (!user) {
         throw new UnauthorizedException('User not found');

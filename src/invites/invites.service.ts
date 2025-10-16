@@ -44,16 +44,16 @@ export class InvitesService {
   }
 
   async getSingleInvite(id: string) {
-    const InviteToken = await this.inviteModal
+    const invite = await this.inviteModal
       .findOne({ token: id, used: false })
       .select('-__v -invitedBy -_id')
       .lean();
-    if (!InviteToken) {
+    if (!invite) {
       throw new NotFoundException(
         `Invite link with token "${id}" not found or may have expired.`,
       );
     }
-    return { message: 'Invite found', invite: InviteToken };
+    return { message: 'Invite found', invite };
   }
   async useInvite(
     id: string,
@@ -78,7 +78,7 @@ export class InvitesService {
     }
     InviteToken.used = true;
     InviteToken.usedAt = new Date();
-    await InviteToken.save();
+
     const hashedPassword = await bcrypt.hash(body?.password, 10);
     const createNewEmployee = new this.userModel({
       ...body,
@@ -88,6 +88,9 @@ export class InvitesService {
       can_invite: false,
       invited_by: InviteToken.invitedBy,
     });
+    InviteToken.usedBy = createNewEmployee._id;
+
+    await InviteToken.save();
     await createNewEmployee.save();
     await this.userModel.findByIdAndUpdate(InviteToken.invitedBy, {
       $push: { employees: createNewEmployee._id },
