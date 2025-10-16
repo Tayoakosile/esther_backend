@@ -35,20 +35,20 @@ export class AuthService {
   async loginAccount(body: { email: string; password: string }) {
     const { email, password } = body;
 
-    const admin = await this.userModel.findOne({ email });
-    if (!admin) {
-      throw new BadRequestException('Invalid email or password');
+    const user = await this.userModel.findOne({ email });
+    if (!user) {
+      throw new BadRequestException('User not found');
     }
 
     // Compare password
-    const isMatch = await bcrypt.compare(password, admin.password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       throw new BadRequestException('Invalid email or password');
     }
     const token = this.jwtService.sign({
-      id: admin._id,
-      email: admin.email,
+      id: user._id,
+      email: user.email,
     });
-    return { message: 'Login successful', token };
+    return { message: 'Login successful', token, user_role: user.role };
   }
 }
