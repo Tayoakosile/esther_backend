@@ -24,11 +24,14 @@ export class AuthGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException();
     }
+    console.log('token :', token);
+
     try {
       const payload = await this.jwtService.verifyAsync<{ id: string }>(token);
+      console.log('payload :', payload);
+
       const user = await this.userModel
         .findById(payload.id)
-        .select('-password -__v role')
         .populate('invites')
         .populate({
           path: 'invited_by',
@@ -36,14 +39,18 @@ export class AuthGuard implements CanActivate {
         })
         .populate({
           path: 'employees',
-          select:
-            '-password -__v -invites -employees -can_invite -is_verified -invited_by',
+          // select:
+          //   ' -__v -invites -employees -can_invite -is_verified -invited_by',
         });
+      // .select(' -__v role');
       if (!user) {
         throw new UnauthorizedException('User not found');
       }
-      request['user'] = user;
-    } catch {
+      const { password: _unused, ...rest } = user.toObject();
+
+      request['user'] = rest;
+    } catch (error) {
+      console.log('error :', error);
       throw new UnauthorizedException();
     }
     return true;
